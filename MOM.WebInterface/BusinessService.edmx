@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BusinessService_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="SynopticLayouts">
+          <Key>
+            <PropertyRef Name="Layout" />
+          </Key>
+          <Property Name="Layout" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AreaId" Type="nvarchar" MaxLength="50" />
+          <Property Name="Svg" Type="nvarchar(max)" />
+          <Property Name="SvgBackup" Type="nvarchar(max)" />
+        </EntityType>
+        <Function Name="F_Anomalie_Aperte2" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Workplace_IN" Type="nvarchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="CISNUM" Type="varchar" MaxLength="8" Nullable="false" />
+                <Property Name="NumSeqDiffDef" Type="int" />
+                <Property Name="TESIS" Type="nvarchar" MaxLength="13" Nullable="false" />
+                <Property Name="TESISDESCRIPTION" Type="nvarchar" MaxLength="200" Nullable="false" />
+                <Property Name="WORKPLACE_OPEN" Type="nvarchar" MaxLength="50" Nullable="false" />
+                <Property Name="DT_OPEN" Type="nvarchar" MaxLength="30" />
+                <Property Name="USER_OPEN" Type="nvarchar" MaxLength="30" />
+                <Property Name="ANOMALIA_TRIM" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_MECC" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_CH1" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_DCKUP" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_CH2" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_CH3" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_DSB" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_DOO" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_FEM" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_UMC" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_DRS" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_GOMA" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_GOMP" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_GRA" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_GRP" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_TRA" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_TRP" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_PRT" Type="int" Nullable="false" />
+                <Property Name="ANOMALIA_DCK" Type="int" Nullable="false" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="List_Cis_D_R" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="List_Cis_R_E" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PlantModelTree" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="SP_F_TOP_TRANSITO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Workplace_IN" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="BusinessService_DBModelStoreContainer">
+          <EntitySet Name="SynopticLayouts" EntityType="Self.SynopticLayouts" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BusinessService_DBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="F_Anomalie_Aperte2_Result">
+          <Property Name="CISNUM" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NumSeqDiffDef" Type="Int32" />
+          <Property Name="TESIS" Type="String" MaxLength="13" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TESISDESCRIPTION" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WORKPLACE_OPEN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DT_OPEN" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="USER_OPEN" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ANOMALIA_TRIM" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_MECC" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_CH1" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_DCKUP" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_CH2" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_CH3" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_DSB" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_DOO" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_FEM" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_UMC" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_DRS" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_GOMA" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_GOMP" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_GRA" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_GRP" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_TRA" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_TRP" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_PRT" Type="Int32" Nullable="false" />
+          <Property Name="ANOMALIA_DCK" Type="Int32" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="SynopticLayouts">
+          <Key>
+            <PropertyRef Name="Layout" />
+          </Key>
+          <Property Name="Layout" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AreaId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Svg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SvgBackup" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="BusinessService_DBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="SynopticLayouts" EntityType="Self.SynopticLayouts" />
+          <FunctionImport Name="F_Anomalie_Aperte2" IsComposable="true" ReturnType="Collection(BusinessService_DBModel.F_Anomalie_Aperte2_Result)">
+            <Parameter Name="Workplace_IN" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="List_Cis_D_R" ReturnType="Collection(BusinessService_DBModel.List_Cis_D_R_Result)" />
+          <FunctionImport Name="List_Cis_R_E" ReturnType="Collection(BusinessService_DBModel.List_Cis_R_E_Result)" />
+          <FunctionImport Name="PlantModelTree" />
+          <FunctionImport Name="SP_F_TOP_TRANSITO" ReturnType="Collection(BusinessService_DBModel.SP_F_TOP_TRANSITO_Result)">
+            <Parameter Name="Workplace_IN" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="List_Cis_D_R_Result">
+          <Property Type="String" Name="CIS" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NUMSEQ" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="NUMTEL" Nullable="true" MaxLength="7" />
+          <Property Type="String" Name="ModCodep_Anag" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="Modello_Anag" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="Serie_Anag" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="Descr_Motore" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="CodMotore" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="TS_Diffusione" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="AllestSpeciale" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="MOTORIZ" Nullable="false" MaxLength="4" />
+          <Property Type="String" Name="MODELLO" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="MERCATO" Nullable="false" MaxLength="5" />
+        </ComplexType>
+        <ComplexType Name="List_Cis_R_E_Result">
+          <Property Type="String" Name="CIS" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="NUMSEQ" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="NUMTEL" Nullable="true" MaxLength="7" />
+          <Property Type="String" Name="ModCodep_Anag" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="Modello_Anag" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="Serie_Anag" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="Descr_Motore" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="CodMotore" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="TS_Diffusione" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="AllestSpeciale" Nullable="true" MaxLength="3" />
+          <Property Type="String" Name="AllSpec" Nullable="false" MaxLength="3" />
+          <Property Type="String" Name="MOTORIZ" Nullable="false" MaxLength="4" />
+          <Property Type="String" Name="MODELLO" Nullable="false" MaxLength="8" />
+          <Property Type="String" Name="MERCATO" Nullable="false" MaxLength="5" />
+        </ComplexType>
+        <ComplexType Name="SP_F_TOP_TRANSITO_Result">
+          <Property Type="String" Name="CIS" Nullable="false" MaxLength="101" />
+          <Property Type="Int32" Name="Sequenza" Nullable="true" />
+          <Property Type="String" Name="WORKPLACE" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="TS_WORKPLACE_ENTERED" Nullable="true" MaxLength="30" />
+          <Property Type="Boolean" Name="WorkplaceExit" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BusinessService_DBModelStoreContainer" CdmEntityContainer="BusinessService_DBEntities">
+          <EntitySetMapping Name="SynopticLayouts">
+            <EntityTypeMapping TypeName="BusinessService_DBModel.SynopticLayouts">
+              <MappingFragment StoreEntitySet="SynopticLayouts">
+                <ScalarProperty Name="Layout" ColumnName="Layout" />
+                <ScalarProperty Name="AreaId" ColumnName="AreaId" />
+                <ScalarProperty Name="Svg" ColumnName="Svg" />
+                <ScalarProperty Name="SvgBackup" ColumnName="SvgBackup" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionName="BusinessService_DBModel.Store.F_Anomalie_Aperte2" FunctionImportName="F_Anomalie_Aperte2">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BusinessService_DBModel.F_Anomalie_Aperte2_Result">
+                <ScalarProperty Name="CISNUM" ColumnName="CISNUM" />
+                <ScalarProperty Name="NumSeqDiffDef" ColumnName="NumSeqDiffDef" />
+                <ScalarProperty Name="TESIS" ColumnName="TESIS" />
+                <ScalarProperty Name="TESISDESCRIPTION" ColumnName="TESISDESCRIPTION" />
+                <ScalarProperty Name="WORKPLACE_OPEN" ColumnName="WORKPLACE_OPEN" />
+                <ScalarProperty Name="DT_OPEN" ColumnName="DT_OPEN" />
+                <ScalarProperty Name="USER_OPEN" ColumnName="USER_OPEN" />
+                <ScalarProperty Name="ANOMALIA_TRIM" ColumnName="ANOMALIA_TRIM" />
+                <ScalarProperty Name="ANOMALIA_MECC" ColumnName="ANOMALIA_MECC" />
+                <ScalarProperty Name="ANOMALIA_CH1" ColumnName="ANOMALIA_CH1" />
+                <ScalarProperty Name="ANOMALIA_DCKUP" ColumnName="ANOMALIA_DCKUP" />
+                <ScalarProperty Name="ANOMALIA_CH2" ColumnName="ANOMALIA_CH2" />
+                <ScalarProperty Name="ANOMALIA_CH3" ColumnName="ANOMALIA_CH3" />
+                <ScalarProperty Name="ANOMALIA_DSB" ColumnName="ANOMALIA_DSB" />
+                <ScalarProperty Name="ANOMALIA_DOO" ColumnName="ANOMALIA_DOO" />
+                <ScalarProperty Name="ANOMALIA_FEM" ColumnName="ANOMALIA_FEM" />
+                <ScalarProperty Name="ANOMALIA_UMC" ColumnName="ANOMALIA_UMC" />
+                <ScalarProperty Name="ANOMALIA_DRS" ColumnName="ANOMALIA_DRS" />
+                <ScalarProperty Name="ANOMALIA_GOMA" ColumnName="ANOMALIA_GOMA" />
+                <ScalarProperty Name="ANOMALIA_GOMP" ColumnName="ANOMALIA_GOMP" />
+                <ScalarProperty Name="ANOMALIA_GRA" ColumnName="ANOMALIA_GRA" />
+                <ScalarProperty Name="ANOMALIA_GRP" ColumnName="ANOMALIA_GRP" />
+                <ScalarProperty Name="ANOMALIA_TRA" ColumnName="ANOMALIA_TRA" />
+                <ScalarProperty Name="ANOMALIA_TRP" ColumnName="ANOMALIA_TRP" />
+                <ScalarProperty Name="ANOMALIA_PRT" ColumnName="ANOMALIA_PRT" />
+                <ScalarProperty Name="ANOMALIA_DCK" ColumnName="ANOMALIA_DCK" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="List_Cis_D_R" FunctionName="BusinessService_DBModel.Store.List_Cis_D_R">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BusinessService_DBModel.List_Cis_D_R_Result">
+                <ScalarProperty Name="CIS" ColumnName="CIS" />
+                <ScalarProperty Name="NUMSEQ" ColumnName="NUMSEQ" />
+                <ScalarProperty Name="NUMTEL" ColumnName="NUMTEL" />
+                <ScalarProperty Name="ModCodep_Anag" ColumnName="ModCodep_Anag" />
+                <ScalarProperty Name="Modello_Anag" ColumnName="Modello_Anag" />
+                <ScalarProperty Name="Serie_Anag" ColumnName="Serie_Anag" />
+                <ScalarProperty Name="Descr_Motore" ColumnName="Descr_Motore" />
+                <ScalarProperty Name="CodMotore" ColumnName="CodMotore" />
+                <ScalarProperty Name="TS_Diffusione" ColumnName="TS_Diffusione" />
+                <ScalarProperty Name="AllestSpeciale" ColumnName="AllestSpeciale" />
+                <ScalarProperty Name="MOTORIZ" ColumnName="MOTORIZ" />
+                <ScalarProperty Name="MODELLO" ColumnName="MODELLO" />
+                <ScalarProperty Name="MERCATO" ColumnName="MERCATO" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="List_Cis_R_E" FunctionName="BusinessService_DBModel.Store.List_Cis_R_E">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BusinessService_DBModel.List_Cis_R_E_Result">
+                <ScalarProperty Name="CIS" ColumnName="CIS" />
+                <ScalarProperty Name="NUMSEQ" ColumnName="NUMSEQ" />
+                <ScalarProperty Name="NUMTEL" ColumnName="NUMTEL" />
+                <ScalarProperty Name="ModCodep_Anag" ColumnName="ModCodep_Anag" />
+                <ScalarProperty Name="Modello_Anag" ColumnName="Modello_Anag" />
+                <ScalarProperty Name="Serie_Anag" ColumnName="Serie_Anag" />
+                <ScalarProperty Name="Descr_Motore" ColumnName="Descr_Motore" />
+                <ScalarProperty Name="CodMotore" ColumnName="CodMotore" />
+                <ScalarProperty Name="TS_Diffusione" ColumnName="TS_Diffusione" />
+                <ScalarProperty Name="AllestSpeciale" ColumnName="AllestSpeciale" />
+                <ScalarProperty Name="AllSpec" ColumnName="AllSpec" />
+                <ScalarProperty Name="MOTORIZ" ColumnName="MOTORIZ" />
+                <ScalarProperty Name="MODELLO" ColumnName="MODELLO" />
+                <ScalarProperty Name="MERCATO" ColumnName="MERCATO" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PlantModelTree" FunctionName="BusinessService_DBModel.Store.PlantModelTree" />
+          <FunctionImportMapping FunctionImportName="SP_F_TOP_TRANSITO" FunctionName="BusinessService_DBModel.Store.SP_F_TOP_TRANSITO">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BusinessService_DBModel.SP_F_TOP_TRANSITO_Result">
+                <ScalarProperty Name="CIS" ColumnName="CIS" />
+                <ScalarProperty Name="Sequenza" ColumnName="Sequenza" />
+                <ScalarProperty Name="WORKPLACE" ColumnName="WORKPLACE" />
+                <ScalarProperty Name="TS_WORKPLACE_ENTERED" ColumnName="TS_WORKPLACE_ENTERED" />
+                <ScalarProperty Name="WorkplaceExit" ColumnName="WorkplaceExit" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
