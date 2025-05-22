@@ -1,0 +1,21 @@
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userprefs
+*.vsidx
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# NuGet Packages
+packages/
+*.nupkg
+
+# SQL Server backup files
+*.bak
