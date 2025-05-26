@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+<log4net>
+
+    <appender name="Console" type="log4net.Appender.ConsoleAppender">
+        <layout type="log4net.Layout.PatternLayout">
+            <!-- Print the date in ISO 8601 format -->
+            <conversionPattern value="%date %ndc [%thread] %-5level %logger - %message%newline" />
+        </layout>
+    </appender>
+
+
+    <appender name="MainAppender" type="log4net.Appender.RollingFileAppender">
+        <file value=".\\Log\\Main.txt" />
+        <param name="AppendToFile" value="true" />
+        <param name="MaximumFileSize" value="5000KB" />
+        <param name="MaxSizeRollBackups" value="10" />
+        <param name="RollingStyle" value="Size" />
+        <param name="StaticLogFileName" value="false" />
+        <layout type="log4net.Layout.PatternLayout">
+            <param name="ConversionPattern" value="%date %ndc [%thread] %-5level %logger - %message%newline" />
+        </layout>
+    </appender>
+
+    <appender name="StazioniAppender" type="log4net.Appender.RollingFileAppender">
+        <file value=".\\Log\\Stazioni\\Stazioni.txt" />
+        <param name="AppendToFile" value="true" />
+        <param name="MaximumFileSize" value="5000KB" />
+        <param name="MaxSizeRollBackups" value="10" />
+        <param name="RollingStyle" value="Size" />
+        <param name="StaticLogFileName" value="false" />
+        <layout type="log4net.Layout.PatternLayout">
+            <param name="ConversionPattern" value="%date %ndc [%thread] %-5level %logger - %message%newline" />
+        </layout>
+    </appender>
+
+    <appender name="ResetAppender" type="log4net.Appender.RollingFileAppender">
+        <file value=".\\Log\\Reset\\Reset.txt" />
+        <param name="AppendToFile" value="true" />
+        <param name="MaximumFileSize" value="5000KB" />
+        <param name="MaxSizeRollBackups" value="5" />
+        <param name="RollingStyle" value="Size" />
+        <param name="StaticLogFileName" value="false" />
+        <layout type="log4net.Layout.PatternLayout">
+            <param name="ConversionPattern" value="%date %ndc [%thread] %-5level %logger - %message%newline" />
+        </layout>
+    </appender>
+
+
+	<!-- public readonly ILog logP = LogManager.GetLogger("Renew"); -->
+    <logger name = "Stazioni" additivity="false">
+        <level value="ALL" />
+        <appender-ref ref="StazioniAppender" />
+    </logger>
+
+    <!-- public readonly ILog logP = LogManager.GetLogger("Reset"); -->
+    <logger name = "Reset" additivity="false">
+        <level value="ALL" />
+        <appender-ref ref="ResetAppender" />
+    </logger>
+
+
+	<!-- public readonly ILog log = LogManager.GetLogger(typeof(<class_name>).Name); -->
+    <root>
+        <level value="ALL" />
+        <appender-ref ref="Console" />
+        <appender-ref ref="MainAppender" />
+    </root>
+
+</log4net>
+
+
+
+

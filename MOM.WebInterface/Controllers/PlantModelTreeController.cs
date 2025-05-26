@@ -13,6 +13,7 @@ using MOM.WebInterface.Models.ViewModels;
 using MOM.WebInterface.Repository;
 using Newtonsoft.Json;
 
+
 namespace MOM.WebInterface.Controllers {
     /// <summary>
     /// API Controller for synoptic operations
@@ -24,7 +25,7 @@ namespace MOM.WebInterface.Controllers {
 
         public SynopticController()
         {
-            _repository = new SynopticRepository(new BusinessService_DBEntities());
+            _repository = new SynopticRepository(new BusinessService_DBEntities1());
         }
 
         #region DTO Classes
@@ -137,25 +138,56 @@ namespace MOM.WebInterface.Controllers {
 
         [HttpPost]
         [Route("GetPlantModelTree")]
-        public async Task<IHttpActionResult> GetPlantModelTree()
+        public IHttpActionResult GetPlantModelTree() //public async Task<IHttpActionResult> GetPlantModelTree()
         {
+            string result;
             try
             {
-                List<PlantModelTreeDto> plantModel = _repository.GetPlantModelTreeTreeAsync();
+                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTree2(); // root
 
-                // Create response in the expected format
-                var response = new PlantModelViewModel
-                {
-                    EquipmentList = plantModel,
-                    ErrorList = new List<ErrorItemDto>()
-                };
+                List<PlantModelTreeDtoBase> plantModelTree = Utility.GetEquipmentsTreeIterative(plantModelFlat);
 
-                return CreateResponse(HttpStatusCode.OK, response);
+
+                ////List<EquipmentDto> plantModelFlat = DbQueries.PlantModel.GetPlantModelFlat(); // root
+                //List<PlantModelTreeDto> plantModelFlat = DbQueries.PlantModel.GetTree(); // root
+
+                //// Convert to DTO and build hierarchy
+                //List<PlantModelTreeDto> plantModelTree = Utility.GetEquipmentsTree(ref plantModelFlat);
+
+                result = JsonConvert.SerializeObject(plantModelTree);
+
+                // elenco degli Equipment Model del livello 5 
+                // - dovrebbero essere el stazioni -
+                //List<EquipmentViewModel> equipmentList = DbQueries.PlantModel.GetEquipmentList(1);
+                //result = "{\"EquipmentList\":[{\"op\":\"op010\",\"Children\":[\"1\",\"2\",\"3\",\"4\",\"5\"]},{\"op\":\"op020\",\"Children\":[\"1\",\"2\",\"3\",\"4\",\"5\"]}],\"ErrorList\":[]}";
             }
             catch (Exception ex)
             {
-                return CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+                result = "{\"EquipmentList\":[],\"ErrorList\":[\"" + ex.Message + "\"]}";
             }
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(result, System.Text.Encoding.UTF8, "application/json");
+            //return response;
+            return CreateResponse(HttpStatusCode.OK, response);
+
+            //try
+            //{
+            //    List<PlantModelTreeDto> plantModel = _repository.GetPlantModelTreeTreeAsync();
+
+            //    // Create response in the expected format
+            //    var response = new PlantModelViewModel
+            //    {
+            //        EquipmentList = plantModel,
+            //        ErrorList = new List<ErrorItemDto>()
+            //    };
+
+            //    return CreateResponse(HttpStatusCode.OK, response);
+            //}
+            //catch (Exception ex)
+            //{
+            //    return CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            //}
         }
 
 

@@ -1,5 +1,4 @@
 ﻿using log4net.Core;
-using MOM.WebInterface.App;
 using MOM.WebInterface.Models.DTO;
 using MOM.WebInterface.Models.ViewModels;
 using System;
@@ -19,15 +18,34 @@ namespace MOM.WebInterface.App_DB
             internal static List<PlantModelTreeDto> GetTree()
             {
                 log.Debug("GetTree");
-                using (var context = new MOMBP_UteDigitale_ReplicaEntities())
+                using (var context = new BusinessService_DBEntities1())
                 {
-                    var clientIdParameter = new SqlParameter("@ClientId", 4);
+                    //var clientIdParameter = new SqlParameter("@ClientId", 4);
 
                     //var result = context.Database
                     //    .SqlQuery<ResultForCampaign>("GetResultsForCampaign @ClientId", clientIdParameter)
                     //    .ToList();
                     var result = context.Database
                         .SqlQuery<PlantModelTreeDto>("PlantModelTree")
+                        .ToList();
+
+                    return result;
+                }
+            }
+
+
+            internal static List<PlantModelTreeDtoBase> GetTree2()
+            {
+                log.Debug("GetTree");
+                using (var context = new BusinessService_DBEntities1())
+                {
+                    //var clientIdParameter = new SqlParameter("@ClientId", 4);
+
+                    //var result = context.Database
+                    //    .SqlQuery<ResultForCampaign>("GetResultsForCampaign @ClientId", clientIdParameter)
+                    //    .ToList();
+                    var result = context.Database
+                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeMontaggioFrontEnd")
                         .ToList();
 
                     return result;
