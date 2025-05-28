@@ -6,6 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="0d5ade064eb54d8b9076f32dd7e2d0a4" Name="Diagram1">
         <EntityTypeShape EntityType="BusinessService_DBModel.SynopticLayouts" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="BusinessService_DBModel.A_TrattiFrontEnd" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

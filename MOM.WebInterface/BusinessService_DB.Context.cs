@@ -28,6 +28,7 @@ namespace MOM.WebInterface
         }
     
         public virtual DbSet<SynopticLayouts> SynopticLayouts { get; set; }
+        public virtual DbSet<A_TrattiFrontEnd> A_TrattiFrontEnd { get; set; }
     
         [DbFunction("BusinessService_DBEntities", "F_Anomalie_Aperte2")]
         public virtual IQueryable<F_Anomalie_Aperte2_Result> F_Anomalie_Aperte2(string workplace_IN)
@@ -61,6 +62,40 @@ namespace MOM.WebInterface
                 new ObjectParameter("Workplace_IN", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<SP_F_TOP_TRANSITO_Result>("SP_F_TOP_TRANSITO", workplace_INParameter);
+        }
+    
+        public virtual int PlantModelTreeMontaggio()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("PlantModelTreeMontaggio");
+        }
+    
+        public virtual int PlantModelTreeMontaggioFrontEnd(Nullable<int> maxLevel)
+        {
+            var maxLevelParameter = maxLevel.HasValue ?
+                new ObjectParameter("MaxLevel", maxLevel) :
+                new ObjectParameter("MaxLevel", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("PlantModelTreeMontaggioFrontEnd", maxLevelParameter);
+        }
+    
+        public virtual int PlantModelTree_OLD()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("PlantModelTree_OLD");
+        }
+    
+        public virtual int PlantModelTreeWP()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("PlantModelTreeWP");
+        }
+    
+        public virtual int PlantModelTreeWS()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("PlantModelTreeWS");
+        }
+    
+        public virtual int WpWs()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("WpWs");
         }
     }
 }

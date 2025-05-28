@@ -18,7 +18,7 @@ namespace MOM.WebInterface.App_DB
             internal static List<PlantModelTreeDto> GetTree()
             {
                 log.Debug("GetTree");
-                using (var context = new BusinessService_DBEntities1())
+                using (var context = new BusinessService_DBEntities())
                 {
                     //var clientIdParameter = new SqlParameter("@ClientId", 4);
 
@@ -37,7 +37,7 @@ namespace MOM.WebInterface.App_DB
             internal static List<PlantModelTreeDtoBase> GetTree2()
             {
                 log.Debug("GetTree");
-                using (var context = new BusinessService_DBEntities1())
+                using (var context = new BusinessService_DBEntities())
                 {
                     //var clientIdParameter = new SqlParameter("@ClientId", 4);
 
@@ -45,7 +45,7 @@ namespace MOM.WebInterface.App_DB
                     //    .SqlQuery<ResultForCampaign>("GetResultsForCampaign @ClientId", clientIdParameter)
                     //    .ToList();
                     var result = context.Database
-                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeMontaggioFrontEnd")
+                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeWS")
                         .ToList();
 
                     return result;

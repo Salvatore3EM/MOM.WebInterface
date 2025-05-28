@@ -25,7 +25,7 @@ namespace MOM.WebInterface.Controllers {
 
         public SynopticController()
         {
-            _repository = new SynopticRepository(new BusinessService_DBEntities1());
+            _repository = new SynopticRepository(new BusinessService_DBEntities());
         }
 
         #region DTO Classes
@@ -138,56 +138,45 @@ namespace MOM.WebInterface.Controllers {
 
         [HttpPost]
         [Route("GetPlantModelTree")]
-        public IHttpActionResult GetPlantModelTree() //public async Task<IHttpActionResult> GetPlantModelTree()
+        public IHttpActionResult GetPlantModelTree()
         {
-            string result;
             try
             {
-                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTree2(); // root
-
+                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTree2();
                 List<PlantModelTreeDtoBase> plantModelTree = Utility.GetEquipmentsTreeIterative(plantModelFlat);
 
+                var responseWrapper = new
+                {
+                    EquipmentList = plantModelTree,
+                    ErrorList = new List<string>()
+                };
 
-                ////List<EquipmentDto> plantModelFlat = DbQueries.PlantModel.GetPlantModelFlat(); // root
-                //List<PlantModelTreeDto> plantModelFlat = DbQueries.PlantModel.GetTree(); // root
+                var settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore
+                };
 
-                //// Convert to DTO and build hierarchy
-                //List<PlantModelTreeDto> plantModelTree = Utility.GetEquipmentsTree(ref plantModelFlat);
+                string result = JsonConvert.SerializeObject(responseWrapper, settings);
 
-                result = JsonConvert.SerializeObject(plantModelTree);
-
-                // elenco degli Equipment Model del livello 5 
-                // - dovrebbero essere el stazioni -
-                //List<EquipmentViewModel> equipmentList = DbQueries.PlantModel.GetEquipmentList(1);
-                //result = "{\"EquipmentList\":[{\"op\":\"op010\",\"Children\":[\"1\",\"2\",\"3\",\"4\",\"5\"]},{\"op\":\"op020\",\"Children\":[\"1\",\"2\",\"3\",\"4\",\"5\"]}],\"ErrorList\":[]}";
+                return ResponseMessage(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(result, Encoding.UTF8, "application/json")
+                });
             }
             catch (Exception ex)
             {
-                result = "{\"EquipmentList\":[],\"ErrorList\":[\"" + ex.Message + "\"]}";
+                string errorJson = JsonConvert.SerializeObject(new
+                {
+                    EquipmentList = new List<object>(),
+                    ErrorList = new List<string> { ex.Message }
+                });
+
+                return ResponseMessage(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                {
+                    Content = new StringContent(errorJson, Encoding.UTF8, "application/json")
+                });
             }
-
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(result, System.Text.Encoding.UTF8, "application/json");
-            //return response;
-            return CreateResponse(HttpStatusCode.OK, response);
-
-            //try
-            //{
-            //    List<PlantModelTreeDto> plantModel = _repository.GetPlantModelTreeTreeAsync();
-
-            //    // Create response in the expected format
-            //    var response = new PlantModelViewModel
-            //    {
-            //        EquipmentList = plantModel,
-            //        ErrorList = new List<ErrorItemDto>()
-            //    };
-
-            //    return CreateResponse(HttpStatusCode.OK, response);
-            //}
-            //catch (Exception ex)
-            //{
-            //    return CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
-            //}
         }
 
 
@@ -317,8 +306,14 @@ namespace MOM.WebInterface.Controllers {
         private IHttpActionResult CreateResponse<T>(HttpStatusCode statusCode, T data)
         {
             var response = new HttpResponseMessage(statusCode);
+
+            var settings = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+
             response.Content = new StringContent(
-                JsonConvert.SerializeObject(data),
+                JsonConvert.SerializeObject(data, settings),
                 Encoding.UTF8,
                 "application/json"
             );
@@ -326,6 +321,7 @@ namespace MOM.WebInterface.Controllers {
             AddCorsHeaders(response);
             return ResponseMessage(response);
         }
+
 
         private IHttpActionResult CreateErrorResponse(HttpStatusCode statusCode, string errorMessage, int errorId = 0)
         {

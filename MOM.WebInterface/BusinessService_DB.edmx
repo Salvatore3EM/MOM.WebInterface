@@ -5,6 +5,19 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="BusinessService_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="A_TrattiFrontEnd">
+          <Key>
+            <PropertyRef Name="IdFrontEnd" />
+          </Key>
+          <Property Name="IdFrontEnd" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="DisplayName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="OrderIndex" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CountStazioni" Type="int" Nullable="false" />
+          <Property Name="FirstWorkplace" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="FirstNotIncludedWorkPlace" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
         <EntityType Name="SynopticLayouts">
           <Key>
             <PropertyRef Name="Layout" />
@@ -51,11 +64,27 @@
         </Function>
         <Function Name="List_Cis_D_R" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="List_Cis_R_E" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
-        <Function Name="PlantModelTree" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PlantModelTree_OLD" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PlantModelTreeMontaggio" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PlantModelTreeMontaggioFrontEnd" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MaxLevel" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PlantModelTreeWP" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PlantModelTreeWS" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="SP_F_TOP_TRANSITO" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Workplace_IN" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="STAZ_AND_INDEX" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="Workplace" Type="nvarchar" Mode="In" />
+          <Parameter Name="TrattoCode" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="TAIL" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="nvarchar">
+          <Parameter Name="Value" Type="nvarchar" Mode="In" />
+          <Parameter Name="StartRemovingFromOccurrence" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="WpWs" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="BusinessService_DBModelStoreContainer">
+          <EntitySet Name="A_TrattiFrontEnd" EntityType="Self.A_TrattiFrontEnd" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SynopticLayouts" EntityType="Self.SynopticLayouts" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -110,6 +139,15 @@
           <FunctionImport Name="SP_F_TOP_TRANSITO" ReturnType="Collection(BusinessService_DBModel.SP_F_TOP_TRANSITO_Result)">
           <Parameter Name="Workplace_IN" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="A_TrattiFrontEnd" EntityType="BusinessService_DBModel.A_TrattiFrontEnd" />
+          <FunctionImport Name="PlantModelTreeMontaggio" />
+          <FunctionImport Name="PlantModelTreeMontaggioFrontEnd" >
+            <Parameter Name="MaxLevel" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PlantModelTree_OLD" />
+          <FunctionImport Name="PlantModelTreeWP" />
+          <FunctionImport Name="PlantModelTreeWS" />
+          <FunctionImport Name="WpWs" />
         </EntityContainer>
         <ComplexType Name="List_Cis_D_R_Result">
           <Property Type="String" Name="CIS" Nullable="false" MaxLength="8" />
@@ -149,6 +187,19 @@
           <Property Type="String" Name="TS_WORKPLACE_ENTERED" Nullable="true" MaxLength="30" />
           <Property Type="Boolean" Name="WorkplaceExit" Nullable="false" />
         </ComplexType>
+        <EntityType Name="A_TrattiFrontEnd">
+          <Key>
+            <PropertyRef Name="IdFrontEnd" />
+          </Key>
+          <Property Name="IdFrontEnd" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="OrderIndex" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CountStazioni" Type="Int32" Nullable="false" />
+          <Property Name="FirstWorkplace" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="FirstNotIncludedWorkPlace" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -236,7 +287,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="PlantModelTree" FunctionName="BusinessService_DBModel.Store.PlantModelTree" />
           <FunctionImportMapping FunctionImportName="SP_F_TOP_TRANSITO" FunctionName="BusinessService_DBModel.Store.SP_F_TOP_TRANSITO">
             <ResultMapping>
               <ComplexTypeMapping TypeName="BusinessService_DBModel.SP_F_TOP_TRANSITO_Result">
@@ -248,6 +298,26 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="A_TrattiFrontEnd">
+            <EntityTypeMapping TypeName="BusinessService_DBModel.A_TrattiFrontEnd">
+              <MappingFragment StoreEntitySet="A_TrattiFrontEnd">
+                <ScalarProperty Name="FirstNotIncludedWorkPlace" ColumnName="FirstNotIncludedWorkPlace" />
+                <ScalarProperty Name="FirstWorkplace" ColumnName="FirstWorkplace" />
+                <ScalarProperty Name="CountStazioni" ColumnName="CountStazioni" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="OrderIndex" ColumnName="OrderIndex" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="IdFrontEnd" ColumnName="IdFrontEnd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="PlantModelTreeMontaggio" FunctionName="BusinessService_DBModel.Store.PlantModelTreeMontaggio" />
+          <FunctionImportMapping FunctionImportName="PlantModelTreeMontaggioFrontEnd" FunctionName="BusinessService_DBModel.Store.PlantModelTreeMontaggioFrontEnd" />
+          <FunctionImportMapping FunctionImportName="PlantModelTree_OLD" FunctionName="BusinessService_DBModel.Store.PlantModelTree_OLD" />
+          <FunctionImportMapping FunctionImportName="PlantModelTreeWP" FunctionName="BusinessService_DBModel.Store.PlantModelTreeWP" />
+          <FunctionImportMapping FunctionImportName="PlantModelTreeWS" FunctionName="BusinessService_DBModel.Store.PlantModelTreeWS" />
+          <FunctionImportMapping FunctionImportName="WpWs" FunctionName="BusinessService_DBModel.Store.WpWs" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
