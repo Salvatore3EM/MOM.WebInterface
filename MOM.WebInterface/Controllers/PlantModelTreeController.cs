@@ -142,7 +142,8 @@ namespace MOM.WebInterface.Controllers {
         {
             try
             {
-                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTree2();
+                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTreeWS(); // root
+
                 List<PlantModelTreeDtoBase> plantModelTree = Utility.GetEquipmentsTreeIterative(plantModelFlat);
 
                 var responseWrapper = new
@@ -177,6 +178,29 @@ namespace MOM.WebInterface.Controllers {
                     Content = new StringContent(errorJson, Encoding.UTF8, "application/json")
                 });
             }
+
+            //////var response = Request.CreateResponse(HttpStatusCode.OK);
+            //////response.Content = new StringContent(result, System.Text.Encoding.UTF8, "application/json");
+            ////////return response;
+            //////return CreateResponse(HttpStatusCode.OK, response);
+
+            ////////try
+            ////////{
+            ////////    List<PlantModelTreeDto> plantModel = _repository.GetPlantModelTreeTreeAsync();
+
+            ////////    // Create response in the expected format
+            ////////    var response = new PlantModelViewModel
+            ////////    {
+            ////////        EquipmentList = plantModel,
+            ////////        ErrorList = new List<ErrorItemDto>()
+            ////////    };
+
+            ////////    return CreateResponse(HttpStatusCode.OK, response);
+            ////////}
+            ////////catch (Exception ex)
+            ////////{
+            ////////    return CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            ////////}
         }
 
 

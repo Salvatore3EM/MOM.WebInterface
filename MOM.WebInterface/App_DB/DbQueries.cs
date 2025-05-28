@@ -1,4 +1,5 @@
 ﻿using log4net.Core;
+using MOM.WebInterface.Models.Assembly;
 using MOM.WebInterface.Models.DTO;
 using MOM.WebInterface.Models.ViewModels;
 using System;
@@ -34,7 +35,7 @@ namespace MOM.WebInterface.App_DB
             }
 
 
-            internal static List<PlantModelTreeDtoBase> GetTree2()
+            internal static List<PlantModelTreeDtoBase> GetTreeWS()
             {
                 log.Debug("GetTree");
                 using (var context = new BusinessService_DBEntities())
@@ -45,12 +46,49 @@ namespace MOM.WebInterface.App_DB
                     //    .SqlQuery<ResultForCampaign>("GetResultsForCampaign @ClientId", clientIdParameter)
                     //    .ToList();
                     var result = context.Database
-                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeWS")
+                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeMontaggioFrontEnd")
                         .ToList();
 
                     return result;
                 }
             }
+
+
+            internal static List<A_Stazioni> GetStazioni(A_TrattiFrontEnd tratto)
+            {
+                log.Debug($"GetStazioni(\"{tratto.DisplayName}\")");
+
+                using (var context = new UteDigitaleEntities())
+                {
+                    IOrderedQueryable<A_Stazioni> query;
+
+                    if (string.IsNullOrEmpty( tratto.FirstNotIncludedWorkPlace))
+                    {
+                        query = from s in context.A_Stazioni
+                                where s.Cancellato == 0
+                                && s.Codice.Contains(tratto.Code)
+                                && s.Codice.CompareTo(tratto.FirstWorkplace) >= 0
+                                orderby s.Ordine ascending
+                                select s;
+                    }
+                    else
+                    {
+                        query = from s in context.A_Stazioni
+                                where s.Cancellato == 0
+                                && s.Codice.Contains(tratto.Code)
+                                && s.Codice.CompareTo(tratto.FirstWorkplace) >= 0
+                                && s.Codice.CompareTo(tratto.FirstNotIncludedWorkPlace) < 0
+                                orderby s.Ordine ascending
+                                select s;
+                    }
+
+                    List<A_Stazioni> result = query.Distinct().ToList();
+
+                    return result;
+                }
+            }
+
+
 
             //internal static List<EquipmentViewModel> GetEquipmentList(int level)
             //{
