@@ -219,14 +219,14 @@
                     const preview = item.anomalie?.[0]?.descrizione || 'Nessuna anomalia';
                     tooltip.textContent = `${item.anomalie?.length || 0} anomalie - ${preview}`;
                     tooltip.style.left = e.pageX + 10 + 'px';
-                    tooltip.style.top = e.pageY - 40 + 'px';
+                    tooltip.style.top = e.pageY - 100 + 'px';
                     tooltip.style.display = 'block';
                 });
 
                 cell.addEventListener('mousemove', (e) => {
                     const tooltip = document.getElementById('customTooltip');
                     tooltip.style.left = e.pageX + 10 + 'px';
-                    tooltip.style.top = e.pageY - 40 + 'px';
+                    tooltip.style.top = e.pageY - 100 + 'px';
                 });
 
                 cell.addEventListener('mouseleave', () => {
@@ -299,31 +299,48 @@
                     const preview = item.anomalie?.[0]?.descrizione || 'Nessuna anomalia';
                     tooltip.textContent = `${item.anomalie?.length || 0} anomalie - ${preview}`;
                     tooltip.style.left = e.pageX + 10 + 'px';
-                    tooltip.style.top = e.pageY - 40 + 'px';
+                    tooltip.style.top = e.pageY - 100 + 'px';
                     tooltip.style.display = 'block';
                 });
 
                 cell.addEventListener('mousemove', (e) => {
                     tooltip.style.left = e.pageX + 10 + 'px';
-                    tooltip.style.top = e.pageY - 40 + 'px';
+                    tooltip.style.top = e.pageY - 100 + 'px';
                 });
 
                 cell.addEventListener('mouseleave', () => {
                     tooltip.style.display = 'none';
                 });
 
-                // Modal su click
                 cell.addEventListener('click', () => {
-                    if (!item.anomalie || item.anomalie.length === 0) return;
+                    const infoHtml = [];
+
+                    // Mostra dettagli generici
+                    infoHtml.push(`<strong>Stazione:</strong> ${item.stazione}`);
+                    if (item.cis) infoHtml.push(`<strong>CIS:</strong> ${item.cis}`);
+                    if (item.modello) infoHtml.push(`<strong>Modello:</strong> ${item.modello}`);
+                    if (item.telaio) infoHtml.push(`<strong>Telaio:</strong> ${item.telaio}`);
+
+                    // Mostra anomalie, se presenti
+                    if (item.anomalie?.length > 0) {
+                        infoHtml.push('<hr><strong>Anomalie:</strong>');
+                        item.anomalie.forEach((a, idx) => {
+                            infoHtml.push(`<div><span class="text-danger">#${idx + 1}:</span> ${a.descrizione}</div>`);
+                        });
+                    } else {
+                        infoHtml.push('<hr><em>Nessuna anomalia presente.</em>');
+                    }
+
+                    // Inserisci contenuto nel modal
                     anomalyList.innerHTML = '';
-                    item.anomalie.forEach(a => {
-                        const li = document.createElement('li');
-                        li.className = 'list-group-item';
-                        li.textContent = a.descrizione || JSON.stringify(a);
-                        anomalyList.appendChild(li);
-                    });
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.innerHTML = infoHtml.join('<br>');
+                    anomalyList.appendChild(li);
+
                     anomalyModal.show();
                 });
+
             });
         }
 
