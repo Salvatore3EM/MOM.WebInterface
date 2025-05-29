@@ -214,7 +214,6 @@
 
                 // Tooltip su hover
                 cell.addEventListener('mouseenter', (e) => {
-                    console.log("test")
                     const tooltip = document.getElementById('customTooltip');
                     const preview = item.anomalie?.[0]?.descrizione || 'Nessuna anomalia';
                     tooltip.textContent = `${item.anomalie?.length || 0} anomalie - ${preview}`;
