@@ -33,6 +33,21 @@
             transition: transform 0.1s ease;
         }
 
+        text {
+            user-select: none;
+           /* pointer-events: none;*/
+        }
+
+        g[class*="equipmentPath_"] {
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        #customTooltip {
+            user-select: none;
+            pointer-events: none;
+        }
+
     </style>
 </head>
 <body>
@@ -76,6 +91,8 @@
         const anomalyList = document.getElementById('anomalyList');
         const minZoom = 0.7;
         const maxZoom = 3;
+        let dataByStazione = {};
+
 
         let currentZoom = 1, translateX = 0, translateY = 0;
         let refreshInterval = 5000, intervalId = null;
@@ -109,6 +126,13 @@
             startY = e.clientY - translateY;
             synopticViewer.style.cursor = 'grabbing';
         });
+        svgContainer.addEventListener('wheel', e => {
+            e.preventDefault();
+            const delta = e.deltaY < 0 ? 0.1 : -0.1;
+            currentZoom = Math.max(0.1, Math.min(5, currentZoom + delta));
+            applyTransform();
+        }, { passive: false });
+
         document.addEventListener('mouseup', () => {
             isDragging = false;
             synopticViewer.style.cursor = 'grab';
@@ -160,25 +184,20 @@
         }
 
         function fetchData() {
-            const layout = synopticSelect.value;
-            if (!layout) return;
-
-            fetch('/api/v2/GetSynopticData', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ SynopticName: layout })
-            })
+            fetch('/api/Assembly')
                 .then(r => r.json())
                 .then(data => {
-                    dataByTableId = {};
+                    dataByStazione = {};
+
                     Object.values(data).flat().forEach(item => {
-                        const id = item.tableid;
-                        dataByTableId[id] = item;
+                        dataByStazione[item.stazione] = item;
                     });
+
                     updateSVG();
                 });
         }
 
+        
         function processSVG() {
             if (!svgElement) return;
 
@@ -189,83 +208,68 @@
                 const cls = [...cell.classList].find(c => c.startsWith('equipmentPath_'));
                 if (!cls) return;
 
-                const tableid = parseInt(cls.replace('equipmentPath_', ''));
-                if (isNaN(tableid)) return;
+                const stazione = cls.replace('equipmentPath_', '');
+                const item = dataByStazione[stazione];
+                if (!item) return;
 
+                // Tooltip su hover
                 cell.addEventListener('mouseenter', (e) => {
-                    const item = dataByTableId[tableid];
-                    if (!item) return;
-
+                    console.log("test")
+                    const tooltip = document.getElementById('customTooltip');
                     const preview = item.anomalie?.[0]?.descrizione || 'Nessuna anomalia';
-                    tooltip.textContent = `${item.anomalie.length} anomalie - ${preview}`;
-                    tooltip.style.left = e.pageX - 10 + 'px';
+                    tooltip.textContent = `${item.anomalie?.length || 0} anomalie - ${preview}`;
+                    tooltip.style.left = e.pageX + 10 + 'px';
                     tooltip.style.top = e.pageY - 40 + 'px';
                     tooltip.style.display = 'block';
                 });
 
                 cell.addEventListener('mousemove', (e) => {
-                    tooltip.style.left = e.pageX - 10 + 'px';
+                    const tooltip = document.getElementById('customTooltip');
+                    tooltip.style.left = e.pageX + 10 + 'px';
                     tooltip.style.top = e.pageY - 40 + 'px';
                 });
 
                 cell.addEventListener('mouseleave', () => {
-                    tooltip.style.display = 'none';
+                    document.getElementById('customTooltip').style.display = 'none';
                 });
 
-                // Click: apri modale
                 cell.addEventListener('click', () => {
-                    const item = dataByTableId[tableid];
-                    if (!item || item.anomalie.length === 0) return;
-
-                    const list = document.getElementById('anomalyList');
-                    list.innerHTML = '';
-
+                    if (!item.anomalie || item.anomalie.length === 0) return;
+                    anomalyList.innerHTML = '';
                     item.anomalie.forEach(a => {
                         const li = document.createElement('li');
                         li.className = 'list-group-item';
                         li.textContent = a.descrizione || JSON.stringify(a);
-                        list.appendChild(li);
+                        anomalyList.appendChild(li);
                     });
-
                     anomalyModal.show();
                 });
-
-                svgContainer.addEventListener('wheel', function (e) {
-                    e.preventDefault();
-
-                    const delta = e.deltaY < 0 ? 0.1 : -0.1;
-                    zoom(delta);
-                });
-
             });
+
         }
 
         function updateSVG() {
             if (!svgElement) return;
 
-            // Prendi tutti gli elementi che hanno una classe che contiene 'equipmentPath_'
-            const allCells = svgElement.querySelectorAll('[class*="equipmentPath_"]');
+            const cells = svgElement.querySelectorAll('[class*="equipmentPath_"]');
 
-            allCells.forEach(cell => {
+            cells.forEach(cell => {
                 const className = [...cell.classList].find(c => c.startsWith('equipmentPath_'));
                 if (!className) return;
 
-                const id = className.replace('equipmentPath_', '');
-                const item = dataByTableId[id];
-                if (!item) {
-                    console.warn(`Nessun dato per equipmentPath_${id}`);
-                    return;
-                }
+                const stazione = className.replace('equipmentPath_', '');
+                const item = dataByStazione[stazione];
+                if (!item) return;
 
-                // Colorazione bordo
+                // Colorazione
                 cell.classList.remove('cell-highlight-green', 'cell-highlight-red');
-                if (item.anomalie?.length > 0) {
+                if (item.anomalie && item.anomalie.length > 0) {
                     cell.classList.add('cell-highlight-red');
                 } else {
                     cell.classList.add('cell-highlight-green');
                 }
 
-                // Aggiornamento testi
+                // Aggiorna contenuti testuali se presenti
                 const nprog = cell.querySelector('.op-nprog');
                 const nseq = cell.querySelector('.op-nseq');
                 const model = cell.querySelector('.op-model');
@@ -273,6 +277,53 @@
                 if (nprog) nprog.textContent = item.cis;
                 if (nseq) nseq.textContent = item.modello;
                 if (model) model.textContent = item.telaio;
+            });
+
+            setupEvents();
+        }
+
+        function setupEvents() {
+            const tooltip = document.getElementById('customTooltip');
+            const cells = svgElement.querySelectorAll('[class*="equipmentPath_"]');
+
+            cells.forEach(cell => {
+                const className = [...cell.classList].find(c => c.startsWith('equipmentPath_'));
+                if (!className) return;
+
+                const stazione = className.replace('equipmentPath_', '');
+                const item = dataByStazione[stazione];
+                if (!item) return;
+
+                // Tooltip su hover – PERSONALIZZATO
+                cell.addEventListener('mouseenter', (e) => {
+                    const preview = item.anomalie?.[0]?.descrizione || 'Nessuna anomalia';
+                    tooltip.textContent = `${item.anomalie?.length || 0} anomalie - ${preview}`;
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY - 40 + 'px';
+                    tooltip.style.display = 'block';
+                });
+
+                cell.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY - 40 + 'px';
+                });
+
+                cell.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+
+                // Modal su click
+                cell.addEventListener('click', () => {
+                    if (!item.anomalie || item.anomalie.length === 0) return;
+                    anomalyList.innerHTML = '';
+                    item.anomalie.forEach(a => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+                        li.textContent = a.descrizione || JSON.stringify(a);
+                        anomalyList.appendChild(li);
+                    });
+                    anomalyModal.show();
+                });
             });
         }
 

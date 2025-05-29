@@ -46,7 +46,7 @@ namespace MOM.WebInterface.App_DB
                     //    .SqlQuery<ResultForCampaign>("GetResultsForCampaign @ClientId", clientIdParameter)
                     //    .ToList();
                     var result = context.Database
-                        .SqlQuery<PlantModelTreeDtoBase>("GetTreeWS")
+                        .SqlQuery<PlantModelTreeDtoBase>("PlantModelTreeWS")
                         .ToList();
 
                     return result;
