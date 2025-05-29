@@ -24,6 +24,11 @@
             stroke-width: 3;
         }
 
+        .cell-highlight-blue rect {
+            stroke: lightblue;
+            stroke-width: 3;
+        }
+
         .cell-highlight-red rect {
             stroke: red;
             stroke-width: 3;
@@ -46,6 +51,9 @@
         #customTooltip {
             user-select: none;
             pointer-events: none;
+        }
+        .modalElement {
+            width: fit-content;
         }
 
     </style>
@@ -72,7 +80,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Dettagli Anomalie</h5>
+                    <h5 class="modal-title">Dettagli</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -260,13 +268,22 @@
                 const item = dataByStazione[stazione];
                 if (!item) return;
 
-                // Colorazione
-                cell.classList.remove('cell-highlight-green', 'cell-highlight-red');
-                if (item.anomalie && item.anomalie.length > 0) {
+                // Rimuove tutti gli stili
+                cell.classList.remove('cell-highlight-green', 'cell-highlight-red', 'cell-highlight-blue');
+
+                // Se è mercato BEV → blu
+                if (item.mercato?.trim().toLowerCase() === 'bev') {
+                    cell.classList.add('cell-highlight-blue');
+                }
+                // Altrimenti rosso se ha anomalie
+                else if (item.anomalie?.length > 0) {
                     cell.classList.add('cell-highlight-red');
-                } else {
+                }
+                // Altrimenti verde
+                else {
                     cell.classList.add('cell-highlight-green');
                 }
+
 
                 // Aggiorna contenuti testuali se presenti
                 const nprog = cell.querySelector('.op-nprog');
@@ -315,10 +332,15 @@
                     const infoHtml = [];
 
                     // Mostra dettagli generici
-                    infoHtml.push(`<strong>Stazione:</strong> ${item.stazione}`);
+                    infoHtml.push(`<div style="display:flex; gap: 1rem;"> <div class="modalElement"> <strong>Stazione:</strong> ${item.stazione}`);
+                    if (item.sequenza) infoHtml.push(`<strong>Sequenza:</strong> ${item.sequenza}`);
                     if (item.cis) infoHtml.push(`<strong>CIS:</strong> ${item.cis}`);
                     if (item.modello) infoHtml.push(`<strong>Modello:</strong> ${item.modello}`);
-                    if (item.telaio) infoHtml.push(`<strong>Telaio:</strong> ${item.telaio}`);
+                    if (item.motorizzazione) infoHtml.push(`<strong>Motorizzazione:</strong> ${item.motorizzazione} </div>`);
+                    if (item.telaio) infoHtml.push(`<div class="modalElement"> <strong>Telaio:</strong> ${item.telaio}`);
+                    if (item.allestimento) infoHtml.push(`<strong>Allestimento:</strong> ${item.allestimento}`);
+                    if (item.tipoMotore) infoHtml.push(`<strong>Tipo Motore:</strong> ${item.tipoMotore}`);
+                    if (item.mercato) infoHtml.push(`<strong>Mercato:</strong> ${item.mercato} </div> </div>`);
 
                     // Mostra anomalie, se presenti
                     if (item.anomalie?.length > 0) {
