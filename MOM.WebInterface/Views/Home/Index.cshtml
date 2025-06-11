@@ -101,6 +101,8 @@
         const maxZoom = 3;
         let dataByStazione = {};
 
+        synopticSelect.addEventListener('change', () => loadSVG());
+
 
         let currentZoom = 1, translateX = 0, translateY = 0;
         let refreshInterval = 5000, intervalId = null;
@@ -111,6 +113,8 @@
         document.getElementById('btnZoomReset').onclick = () => resetZoom();
         document.getElementById('btnLoad').onclick = () => loadSVG();
         document.getElementById('btnReload').onclick = () => reloadSVG();
+
+
 
         function zoom(delta) {
             currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom + delta));
@@ -152,30 +156,36 @@
             applyTransform();
         });
 
-        function loadSVG() {
+        async function loadSVG() {
             const layout = synopticSelect.value;
             if (!layout) return alert('Seleziona un sinottico');
 
-            fetch('/api/v2/GetSynoptic', {
+            stopAutoRefresh(); // Ferma eventuale refresh precedente
+
+            const response = await fetch('/api/v2/GetSynoptic', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ SynopticName: layout })
-            })
-                .then(r => r.json())
-                .then(data => {
-                    const svg = data.SynopticList?.[0]?.Svg;
-                    synopticViewer.innerHTML = svg || '<p>Errore caricamento SVG</p>';
+            });
 
-                    setTimeout(() => {
-                        svgElement = synopticViewer.querySelector('svg');
-                        resetZoom();
-                        processSVG();
-                        updateSVG(); // Popola subito se il fetch è lento
-                        startAutoRefresh(); // Fa anche fetchData() che richiama updateSVG()
-                    }, 100);
+            const data = await response.json();
+            const svg = data.SynopticList?.[0]?.Svg;
+            synopticViewer.innerHTML = svg || '<p>Errore caricamento SVG</p>';
 
-                });
+            // Attendi che l'SVG sia nel DOM
+            setTimeout(async () => {
+                svgElement = synopticViewer.querySelector('svg');
+                resetZoom();
+                processSVG();
+
+                // 🚨 Carica i dati PRIMA di fare updateSVG
+                await fetchData(); // Popola dataByStazione
+                updateSVG();       // Applica colori e testi aggiornati
+                startAutoRefresh(); // Avvia il refresh periodico
+
+            }, 100);
         }
+
 
         function reloadSVG() {
             stopAutoRefresh();
@@ -191,19 +201,16 @@
             clearInterval(intervalId);
         }
 
-        function fetchData() {
-            fetch('/api/Assembly')
-                .then(r => r.json())
-                .then(data => {
-                    dataByStazione = {};
+        async function fetchData() {
+            const response = await fetch('/api/Assembly');
+            const data = await response.json();
 
-                    Object.values(data).flat().forEach(item => {
-                        dataByStazione[item.stazione] = item;
-                    });
-
-                    updateSVG();
-                });
+            dataByStazione = {};
+            Object.values(data).flat().forEach(item => {
+                dataByStazione[item.stazione] = item;
+            });
         }
+
 
         
         function processSVG() {

@@ -1,6 +1,7 @@
 ﻿using MOM.WebInterface.Models.DTO;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 
@@ -9,26 +10,26 @@ namespace MOM.WebInterface.App_DB
     public static class Utility
     {
 
-        public static List<PlantModelTreeDtoBase> GetEquipmentsTreeIterative(List<PlantModelTreeDtoBase> equipmentsFlat)
+        public static List<EquipmentDto> GetEquipmentsTreeIterative(List<EquipmentDto> equipmentsFlat)
         {
-            void PreOrder(ref PlantModelTreeDtoBase root)
+            void PreOrder(ref EquipmentDto root)
             {
                 if (root == null)
                     return;
 
-                Stack<PlantModelTreeDtoBase> s = new Stack<PlantModelTreeDtoBase>();
+                Stack<EquipmentDto> s = new Stack<EquipmentDto>();
                 s.Push(root);
 
                 while (s.Count > 0)
                 {
-                    PlantModelTreeDtoBase curr = s.Pop();
+                    EquipmentDto curr = s.Pop();
 
                     // visita della radice: raccolta dei figli del sottoalbero
                     curr.Children = equipmentsFlat.Where(e => e.IdParent == curr.IdEquipment).ToList();
 
                     if (curr.Children.Count > 0)
                     {
-                        foreach (PlantModelTreeDtoBase child in curr.Children)
+                        foreach (EquipmentDto child in curr.Children)
                         {
                             s.Push(child);
                         }
@@ -40,17 +41,17 @@ namespace MOM.WebInterface.App_DB
 
 
 
-            Stack<PlantModelTreeDtoBase> stackMaster = new Stack<PlantModelTreeDtoBase>();
+            Stack<EquipmentDto> stackMaster = new Stack<EquipmentDto>();
 
-            List<PlantModelTreeDtoBase> Roots = equipmentsFlat.Where(e => (e.IdParent == null) || (e.IdParent <= 0)).ToList();
-            foreach (PlantModelTreeDtoBase root in Roots)
+            List<EquipmentDto> Roots = equipmentsFlat.Where(e => (e.IdParent == null) || (e.IdParent <= 0)).ToList();
+            foreach (EquipmentDto root in Roots)
             {
                 stackMaster.Push(root);
             }
 
             while (stackMaster.Count > 0)
             {
-                PlantModelTreeDtoBase root = stackMaster.Pop();
+                EquipmentDto root = stackMaster.Pop();
                 PreOrder(ref root);
             }
 
@@ -69,17 +70,17 @@ namespace MOM.WebInterface.App_DB
             //}
         }
 
-        public static List<int> PreOrder(PlantModelTreeDtoBase root, ref List<PlantModelTreeDtoBase> equipmentsFlat)
+        public static List<int> PreOrder(EquipmentDto root, ref List<EquipmentDto> equipmentsFlat)
         {
             List<int> res = new List<int>();
             if (root == null)
                 return res;
-            Stack<PlantModelTreeDtoBase> s = new Stack<PlantModelTreeDtoBase>();
+            Stack<EquipmentDto> s = new Stack<EquipmentDto>();
             s.Push(root);
 
             while (s.Count > 0)
             {
-                PlantModelTreeDtoBase curr = s.Pop();
+                EquipmentDto curr = s.Pop();
                 // res.Add(curr.data); // visita la radice
 
                 // visita della radice: raccolta dei figli del sottoalbero
@@ -87,7 +88,7 @@ namespace MOM.WebInterface.App_DB
 
                 if (curr.Children.Count > 0)
                 {
-                    foreach (PlantModelTreeDtoBase child in curr.Children)
+                    foreach (EquipmentDto child in curr.Children)
                     {
                         s.Push(child);
                     }
@@ -101,8 +102,33 @@ namespace MOM.WebInterface.App_DB
             return res;
         }
 
+        public static List<EquipmentDto> GetPlantModelTreeFlatEquipmentDto(string parametrouno, string parametrodue)
+        {
+            BusinessService_DBEntities db = new BusinessService_DBEntities();
+            List<EquipmentDto> result = null;
 
+            try
+            {
+                var parametro_uno = new SqlParameter("@parametro_uno", parametrouno);
+                var parametro_due = new SqlParameter("@parametro_due", parametrodue);
 
+                result = db.Database.SqlQuery<EquipmentDto>("EXEC dbo.PlantModelSubTree @parametro_uno, @parametro_due", parametro_uno, parametro_due).ToList();
+            }
+            catch (Exception ex)
+            {
+                //log.Error(ex);
+            }
+
+            if ((result == null) || (result.Count == 0))
+            {
+                return null;
+            }
+
+            else
+            {
+                return result;
+            }
+        }
 
         public static List<PlantModelTreeDto> GetEquipmentsTree(ref List<PlantModelTreeDto> equipmentsFlat)
         {

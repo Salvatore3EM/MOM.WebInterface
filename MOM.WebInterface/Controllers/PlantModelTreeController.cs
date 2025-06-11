@@ -142,9 +142,15 @@ namespace MOM.WebInterface.Controllers {
         {
             try
             {
-                List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTreeWS(); // root
+                //List<PlantModelTreeDtoBase> plantModelFlat = DbQueries.PlantModel.GetTreeWS(); // root
 
-                List<PlantModelTreeDtoBase> plantModelTree = Utility.GetEquipmentsTreeIterative(plantModelFlat);
+                //List<PlantModelTreeDtoBase> plantModelTree = Utility.GetEquipmentsTreeIterative(plantModelFlat);
+
+                List<EquipmentDto> newPlantModelTree = Utility.GetPlantModelTreeFlatEquipmentDto("2", "3");
+                List<EquipmentDto> newPlantModelTreeFiltered = newPlantModelTree.Where(e => e.Level != 6).ToList();
+
+                List<EquipmentDto> plantModelTree = Utility.GetEquipmentsTreeIterative(newPlantModelTreeFiltered);
+
 
                 var responseWrapper = new
                 {

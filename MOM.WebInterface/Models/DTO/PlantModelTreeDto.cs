@@ -79,7 +79,7 @@ namespace MOM.WebInterface.Models.DTO {
         /// Descrizione dell'Equipment
         /// </summary>
         public string Descrizione { get; set; }
-        public List<PlantModelTreeDtoBase> Children { get; set; } = new List<PlantModelTreeDtoBase>();
+        public List<EquipmentDto> Children { get; set; } = new List<EquipmentDto>();
     }
 
 }

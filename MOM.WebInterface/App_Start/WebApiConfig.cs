@@ -10,7 +10,7 @@ namespace MOM.WebInterface
     {
         public static void Register(HttpConfiguration config)
         {
-            var cors = new EnableCorsAttribute("http://localhost:50447", "*", "*");
+            var cors = new EnableCorsAttribute("http://localhost:5272", "*", "*");
             config.EnableCors(cors);
 
             // Web API routes

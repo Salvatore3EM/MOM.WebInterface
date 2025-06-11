@@ -218,8 +218,14 @@ namespace MOM.WebInterface.Controllers
 
                 int start = 0;
                 A_TrattiFrontEnd tratto = GetTrattoFrontEnd("TRIM1");
-                start = Debug_GetCisInLinea(tratto, start,  vetture, out List<Vettura> CisSeqTrim1);
-                start = Debug_GetCisInLinea(GetTrattoFrontEnd("TRIM2"), start,  vetture, out List<Vettura> CisSeqTrim2);
+                //start = Debug_GetCisInLinea(tratto, start,  vetture, out List<Vettura> CisSeqTrim1);
+                //start = Debug_GetCisInLinea(GetTrattoFrontEnd("TRIM2"), start,  vetture, out List<Vettura> CisSeqTrim2);
+
+                start = Debug_GetCisInLinea(tratto, start, vetture, anomalie, out List<Vettura> CisSeqTrim1);
+
+                start = Debug_GetCisInLinea(GetTrattoFrontEnd("TRIM2"), start, vetture, anomalie, out List<Vettura> CisSeqTrim2);
+
+
                 //start = Debug_GetCisInBuffer(10, start,  vetture, out List<Vettura> CisSeqBufferTR1TR2);
 
                 //start = Debug_GetCisInLinea(GetTrattoFrontEnd("CH1"), start, vetture, out List<Vettura> CisSeqCh1);
@@ -298,7 +304,7 @@ namespace MOM.WebInterface.Controllers
         }
 
 
-        private int Debug_GetCisInLinea(A_TrattiFrontEnd tratto, int start, List<Vettura> vetture, out List<Vettura> vettureInLinea)
+        private int Debug_GetCisInLinea(A_TrattiFrontEnd tratto, int start, List<Vettura> vetture, List<Anomalia> anomalie, out List<Vettura> vettureInLinea)
         {
             List<A_Stazioni> StazioniTratto = DbQueries.PlantModel.GetStazioni(tratto);
 
@@ -307,24 +313,37 @@ namespace MOM.WebInterface.Controllers
             int localIndex = 0;
             while (offset < tratto.CountStazioni + start)
             {
-                if (offset >= vetture.Count)
+                if (offset >= tratto.CountStazioni + start)
                 {
                     break;
                 }
                 vetture[offset].Stazione = StazioniTratto.ElementAt(localIndex).Codice;
                 vettureInLinea.Add(vetture[offset]);
+                List<Anomalia> anomalieVettura = new List<Anomalia>();
+                anomalieVettura = anomalie.Where(a => a.Cis == vetture[offset].Cis).ToList();
 
+                Anomalia testanomalia = new Anomalia();
+                if (offset == tratto.CountStazioni + start - 7)
+                {
+                    testanomalia.Tesis = "test";
+                    testanomalia.Descrizione = "testdescr";
+                    testanomalia.Cis = "testcis";
+                    anomalieVettura.Add(testanomalia);
+                }
+
+
+                vetture[offset].ListaAnomalia = anomalieVettura;
                 offset++;
                 localIndex++;
             }
             return offset;
         }
 
-        private int  Debug_GetCisInBuffer(A_TrattiFrontEnd tratto, int start, List<Vettura> vetture, out List<Vettura> vettureInBuffer)
-        {
-            return Debug_GetCisInLinea(tratto, start, vetture, out vettureInBuffer);
+        //private int  Debug_GetCisInBuffer(A_TrattiFrontEnd tratto, int start, List<Vettura> vetture, out List<Vettura> vettureInBuffer)
+        //{
+        //    return Debug_GetCisInLinea(tratto, start, vetture, out vettureInBuffer);
 
-        }
+        //}
 
 
 
